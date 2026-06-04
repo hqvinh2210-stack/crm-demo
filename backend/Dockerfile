@@ -1,7 +1,7 @@
 FROM python:3.12-slim
 
 WORKDIR /app
-
+COPY seed_demo_data.py ./seed_demo_data.py
 COPY requirements.txt ./
 RUN python -m pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
