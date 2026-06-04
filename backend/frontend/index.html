@@ -5,10 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CRM Dashboard - Multi-Page</title>
   <style>
-    /* Copied styles from app/static/index.html to keep UI identical */
-    :root { color-scheme: light; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #edf2fb; color: #0f2137; }
+    :root {
+      color-scheme: light;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #edf2fb;
+      color: #0f2137;
+    }
+
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; }
+
     .layout { display: grid; grid-template-columns: 260px 1fr; gap: 28px; padding: 28px; min-height: 100vh; }
     .sidebar { background: #0f4c81; border-radius: 28px; padding: 28px 20px; color: white; display: flex; flex-direction: column; justify-content: space-between; height: fit-content; position: sticky; top: 24px; }
     .sidebar h1 { margin: 0 0 28px; font-size: 1.4rem; letter-spacing: .05em; }
@@ -16,10 +22,12 @@
     .nav-link.active, .nav-link:hover { background: rgba(255,255,255,.12); color: white; }
     .nav-link span { width: 20px; text-align: center; }
     .sidebar footer { margin-top: auto; font-size: .92rem; opacity: .85; }
+
     .main-content { display: flex; flex-direction: column; gap: 32px; }
     .page { display: none; }
     .page.active { display: flex; flex-direction: column; gap: 28px; animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
     .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
     .topbar h2 { margin: 0; font-size: 1.6rem; font-weight: 700; }
     .topbar p { margin: 8px 0 0; color: #64748b; font-size: 0.96rem; }
@@ -29,11 +37,13 @@
     .button.secondary { background: rgba(15,76,129,.1); color: #0f4c81; }
     .button:hover { opacity: 0.9; }
     .back-btn { display: flex; align-items: center; gap: 8px; background: rgba(15,76,129,.1); color: #0f4c81; }
+
     .summary-grid { display: grid; grid-template-columns: repeat(4, minmax(220px, 1fr)); gap: 24px; width: 100%; }
     .card { background: white; border-radius: 24px; padding: 28px; box-shadow: 0 20px 50px rgba(15,76,129,.08); min-width: 0; overflow: hidden; }
     .card small { display: block; color: #64748b; margin-bottom: 12px; font-size: 0.9rem; }
     .card .large { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; line-height: 1.2; }
     .card .delta { color: #16a34a; font-weight: 600; font-size: 0.95rem; }
+
     .chart-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(360px, 1fr); gap: 28px; align-items: stretch; width: 100%; }
     .chart { background: white; border-radius: 24px; padding: 28px; box-shadow: 0 20px 50px rgba(15,76,129,.08); min-width: 0; overflow: hidden; }
     .chart header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
@@ -45,6 +55,7 @@
     .bar-track { width: 100%; height: 14px; border-radius: 999px; background: #e2e8f0; overflow: hidden; }
     .bar-fill { height: 100%; border-radius: 999px; transition: width 0.3s ease; }
     .bar-value { text-align: right; font-size: .85rem; color: #334155; font-weight: 600; }
+
     .details-grid { display: grid; gap: 28px; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; width: 100%; }
     .table { width: 100%; min-width: 680px; border-collapse: collapse; }
     .table thead tr { background: #f8fafc; }
@@ -57,9 +68,11 @@
     .tag.yellow { background: #fef9c3; color: #b45309; }
     .tag.blue { background: #dbeafe; color: #1d4ed8; }
     .tag.gray { background: #e2e8f0; color: #475569; }
+
     .legend { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px; }
     .legend-item { display: flex; align-items: center; gap: 10px; font-size: 0.94rem; color: #475569; }
     .legend-color { width: 12px; height: 12px; border-radius: 999px; }
+
     .chat-container { display: flex; flex-direction: column; height: 100%; }
     .chat-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
     .chat-message { display: flex; gap: 8px; }
@@ -77,14 +90,595 @@
     .chat-send-btn { background: #1b6efa; color: white; border: none; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 600; transition: background 0.2s; }
     .chat-send-btn:hover { background: #1550d8; }
     .chat-send-btn:disabled { background: #cbd5e0; cursor: not-allowed; }
-    @media (max-width: 1280px) { .layout { grid-template-columns: 1fr; } .summary-grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); } .chart-grid, .details-grid { grid-template-columns: 1fr; } .card:has(.table) { overflow-x: auto; } }
-    @media (max-width: 760px) { .layout { padding: 16px; gap: 16px; } .summary-grid { grid-template-columns: 1fr; } .card, .chart { padding: 20px; border-radius: 20px; } .bar-row { grid-template-columns: 1fr; gap: 8px; } .bar-value { text-align: left; } }
+
+    @media (max-width: 1280px) {
+      .layout { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+      .chart-grid, .details-grid { grid-template-columns: 1fr; }
+      .card:has(.table) { overflow-x: auto; }
+    }
+
+    @media (max-width: 760px) {
+      .layout { padding: 16px; gap: 16px; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .card, .chart { padding: 20px; border-radius: 20px; }
+      .bar-row { grid-template-columns: 1fr; gap: 8px; }
+      .bar-value { text-align: left; }
+    }
   </style>
 </head>
 <body>
-  <!-- Reuse exact body from original file to preserve functionality -->
-  <!-- To keep the patch small, the full body is copied verbatim from app/static/index.html in the workspace -->
-  <!-- If you need the exact content here, it's identical to app/static/index.html -->
-  <script>/* Frontend entry preserved in backend/app/static/index.html for reference. */</script>
+  <div class="layout">
+    <aside class="sidebar">
+      <div>
+        <h1>CRM</h1>
+        <button class="nav-link active" onclick="navigateTo('dashboard')" data-page="dashboard"><span>•</span> Dashboard</button>
+        <button class="nav-link" onclick="navigateTo('customers')" data-page="customers"><span>•</span> Customers</button>
+        <button class="nav-link" onclick="navigateTo('conversations')" data-page="conversations"><span>•</span> Conversations</button>
+        <button class="nav-link" onclick="navigateTo('reports')" data-page="reports"><span>•</span> Reports</button>
+      </div>
+      <footer>
+        User: <strong>Admin</strong><br />
+        Status: <strong>Demo</strong>
+      </footer>
+    </aside>
+
+    <div class="main-content">
+      <!-- DASHBOARD PAGE -->
+      <div class="page active" id="dashboard-page">
+        <div class="topbar">
+          <div>
+            <h2>Dashboard CRM</h2>
+            <p>Tổng quan hoạt động khách hàng và cuộc trò chuyện</p>
+          </div>
+          <div class="top-actions">
+            <button class="button secondary">Export</button>
+            <button class="button primary">Create leads</button>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <div class="card">
+            <small>Total Customers</small>
+            <div class="large" id="totalCustomers"></div>
+            <div class="delta">+18.7%</div>
+          </div>
+          <div class="card">
+            <small>Active Conversations</small>
+            <div class="large" id="activeCustomers"></div>
+            <div class="delta" style="color: #16a34a;">+12.4%</div>
+          </div>
+          <div class="card">
+            <small>New leads</small>
+            <div class="large" id="newLeads"></div>
+            <div class="delta" style="color: #16a34a;">+23.1%</div>
+          </div>
+          <div class="card">
+            <small>Average Response</small>
+            <div class="large" id="avgResponse">2.4h</div>
+            <div class="delta" style="color: #f59e0b;">+3.2%</div>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart">
+            <header>
+              <h3>Customer status breakdown</h3>
+              <span style="color: #64748b; font-size: .92rem;">Click để xem chi tiết</span>
+            </header>
+            <div id="customerStatusChart"></div>
+            <div class="legend" id="statusLegend"></div>
+          </div>
+          <div class="chart">
+            <header>
+              <h3>Conversation volume by channel</h3>
+              <span style="color: #64748b; font-size: .92rem;">Click để xem chi tiết</span>
+            </header>
+            <div id="channelChart"></div>
+            <div class="legend" id="channelLegend"></div>
+          </div>
+        </div>
+
+        <div class="details-grid">
+          <div class="card">
+            <header style="display:flex; justify-content:space-between; gap: 16px; align-items:center; margin-bottom: 24px;">
+              <div>
+                <h3 style="margin-top: 0;">Top customers</h3>
+                <p style="margin: 6px 0 0; color: #64748b; font-size: 0.93rem;">Danh sách khách hàng hàng đầu</p>
+              </div>
+              <button class="button secondary" onclick="navigateTo('customers')">View all</button>
+            </header>
+            <table class="table">
+              <thead>
+                <tr><th>#</th><th>Name</th><th>Status</th><th>Phone</th><th>Conversations</th></tr>
+              </thead>
+              <tbody id="customerTable"></tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <header style="display:flex; justify-content:space-between; gap: 16px; align-items:center; margin-bottom: 24px;">
+              <div>
+                <h3 style="margin-top: 0;">Latest conversations</h3>
+                <p style="margin: 6px 0 0; color: #64748b; font-size: 0.93rem;">Cuộc trò chuyện gần nhất</p>
+              </div>
+              <button class="button secondary" onclick="navigateTo('conversations')">See all</button>
+            </header>
+            <table class="table">
+              <thead>
+                <tr><th>#</th><th>Subject</th><th>Customer</th><th>Channel</th><th>Status</th></tr>
+              </thead>
+              <tbody id="conversationTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATUS BREAKDOWN PAGE -->
+      <div class="page" id="status-page">
+        <div class="topbar">
+          <button class="button back-btn" onclick="navigateTo('dashboard')"><span>←</span> Back</button>
+          <h2>Customer Status Breakdown</h2>
+        </div>
+        
+        <div class="chart">
+          <div id="statusDetailChart" style="margin-bottom: 24px;"></div>
+          <div class="legend" id="statusDetailLegend"></div>
+        </div>
+
+        <div class="card" style="margin-top: 28px;">
+          <h3 style="margin-top: 0; margin-bottom: 20px;">Customers by Status</h3>
+          <table class="table">
+            <thead>
+              <tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th></tr>
+            </thead>
+            <tbody id="statusCustomerTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CHANNEL BREAKDOWN PAGE -->
+      <div class="page" id="channel-page">
+        <div class="topbar">
+          <button class="button back-btn" onclick="navigateTo('dashboard')"><span>←</span> Back</button>
+          <h2>Conversation Volume by Channel</h2>
+        </div>
+        
+        <div class="chart">
+          <div id="channelDetailChart" style="margin-bottom: 24px;"></div>
+          <div class="legend" id="channelDetailLegend"></div>
+        </div>
+
+        <div class="card" style="margin-top: 28px;">
+          <h3 style="margin-top: 0; margin-bottom: 20px;">Conversations by Channel</h3>
+          <table class="table">
+            <thead>
+              <tr><th>#</th><th>Subject</th><th>Customer</th><th>Channel</th><th>Messages</th></tr>
+            </thead>
+            <tbody id="channelConversationTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CUSTOMERS PAGE -->
+      <div class="page" id="customers-page">
+        <div class="topbar">
+          <button class="button back-btn" onclick="navigateTo('dashboard')"><span>←</span> Back</button>
+          <h2>All Customers</h2>
+        </div>
+
+        <div class="card">
+          <table class="table">
+            <thead>
+              <tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Conversations</th></tr>
+            </thead>
+            <tbody id="allCustomerTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CONVERSATIONS PAGE -->
+      <div class="page" id="conversations-page">
+        <div class="topbar">
+          <button class="button back-btn" onclick="navigateTo('dashboard')"><span>←</span> Back</button>
+          <h2>All Conversations</h2>
+        </div>
+
+        <div class="details-grid">
+          <div class="card">
+            <table class="table">
+              <thead>
+                <tr><th>#</th><th>Subject</th><th>Customer</th><th>Channel</th></tr>
+              </thead>
+              <tbody id="allConversationTable"></tbody>
+            </table>
+          </div>
+          <div class="card" style="display: none; flex-direction: column; padding: 0; overflow: hidden;" id="chatCard">
+            <header style="padding: 16px 20px; border-bottom: 1px solid #e2e8f0; flex-shrink: 0;">
+              <h3 style="margin: 0;" id="chatTitle">Conversation details</h3>
+            </header>
+            <div class="chat-container" id="chatPanel">
+              <div class="chat-body">
+                <div class="empty" style="margin:auto;">Select a conversation</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS PAGE -->
+      <div class="page" id="reports-page">
+        <div class="topbar">
+          <button class="button back-btn" onclick="navigateTo('dashboard')"><span>←</span> Back</button>
+          <h2>Reports & Analytics</h2>
+        </div>
+
+        <div class="chart-grid">
+          <div class="card">
+            <h3 style="margin-top: 0; margin-bottom: 20px;">Summary</h3>
+            <div id="reportsSummary"></div>
+          </div>
+          <div class="card">
+            <h3 style="margin-top: 0; margin-bottom: 20px;">Key Metrics</h3>
+            <div id="reportsMetrics"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const apiBase = '';
+    let customers = [];
+    let conversations = [];
+    let currentConversation = null;
+
+    const statusColors = {
+      'New lead': 'gray',
+      'Contacted': 'blue',
+      'In negotiation': 'yellow',
+      'Customer': 'green',
+      'Dormant': 'gray',
+    };
+
+    const statusColorsHex = {
+      'New lead': '#94a3b8',
+      'Contacted': '#60a5fa',
+      'In negotiation': '#fbbf24',
+      'Customer': '#34d399',
+      'Dormant': '#cbd5e1',
+    };
+
+    const channelColors = ['#34d399', '#f97316', '#60a5fa'];
+
+    function navigateTo(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(page + '-page').classList.add('active');
+
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      const pageLink = document.querySelector(`[data-page="${page}"]`);
+      if (pageLink) pageLink.classList.add('active');
+
+      window.scrollTo(0, 0);
+    }
+
+    function fetchJson(path) {
+      return fetch(apiBase + path, { headers: { 'Accept': 'application/json' } })
+        .then(resp => {
+          if (!resp.ok) throw new Error('API Error ' + resp.status);
+          return resp.json();
+        });
+    }
+
+    function statusTag(status) {
+      const tag = document.createElement('span');
+      const cls = statusColors[status] || 'gray';
+      tag.className = `tag ${cls}`;
+      tag.textContent = status;
+      return tag;
+    }
+
+    function formatChannel(channelId) {
+      const channels = { 1: 'Email', 2: 'Facebook', 3: 'Instagram', 4: 'Zalo', 5: 'SMS' };
+      return channels[channelId] || 'Unknown';
+    }
+
+    function buildBar(label, value, max, colorHex, clickHandler) {
+      const row = document.createElement('div');
+      row.className = 'bar-row';
+      if (clickHandler) row.onclick = clickHandler;
+
+      const labelDiv = document.createElement('div');
+      labelDiv.className = 'bar-label';
+      labelDiv.textContent = label;
+
+      const trackContainer = document.createElement('div');
+      trackContainer.className = 'bar-track';
+      const fill = document.createElement('div');
+      fill.className = 'bar-fill';
+      const percentage = max > 0 ? (value / max) * 100 : 0;
+      fill.style.width = `${Math.round(percentage)}%`;
+      fill.style.backgroundColor = colorHex;
+      trackContainer.appendChild(fill);
+
+      const valueDiv = document.createElement('div');
+      valueDiv.className = 'bar-value';
+      valueDiv.textContent = value;
+
+      row.appendChild(labelDiv);
+      row.appendChild(trackContainer);
+      row.appendChild(valueDiv);
+      return row;
+    }
+
+    function renderDashboard() {
+      const customerStatusCount = customers.reduce((acc, customer) => {
+        acc[customer.status] = (acc[customer.status] || 0) + 1;
+        return acc;
+      }, {});
+      const total = customers.length;
+      const newLeads = customerStatusCount['New lead'] || 0;
+      const activeCount = conversations.length;
+
+      document.getElementById('totalCustomers').textContent = total;
+      document.getElementById('activeCustomers').textContent = activeCount;
+      document.getElementById('newLeads').textContent = newLeads;
+
+      const statusChart = document.getElementById('customerStatusChart');
+      statusChart.innerHTML = '';
+      const maxStatus = Math.max(...Object.values(customerStatusCount), 1);
+      const legend = document.getElementById('statusLegend');
+      legend.innerHTML = '';
+      const statusOrder = ['New lead', 'Contacted', 'In negotiation', 'Customer', 'Dormant'];
+      statusOrder.forEach((status) => {
+        const count = customerStatusCount[status] || 0;
+        const color = statusColorsHex[status];
+        if (count === 0) return;
+        statusChart.appendChild(buildBar(status, count, maxStatus, color, () => showStatusDetail(status)));
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item';
+        legendItem.innerHTML = `<span class="legend-color" style="background:${color}"></span>${status} (${count})`;
+        legend.appendChild(legendItem);
+      });
+
+      const channelCount = conversations.reduce((acc, conv) => {
+        const channel = formatChannel(conv.channel_id);
+        acc[channel] = (acc[channel] || 0) + 1;
+        return acc;
+      }, {});
+      const channelChart = document.getElementById('channelChart');
+      channelChart.innerHTML = '';
+      const maxChannel = Math.max(...Object.values(channelCount), 1);
+      const channelLegend = document.getElementById('channelLegend');
+      channelLegend.innerHTML = '';
+      Object.entries(channelCount).forEach(([label, value], idx) => {
+        const color = channelColors[idx % channelColors.length];
+        channelChart.appendChild(buildBar(label, value, maxChannel, color, () => showChannelDetail(label)));
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item';
+        legendItem.innerHTML = `<span class="legend-color" style="background:${color}"></span>${label} (${value})`;
+        channelLegend.appendChild(legendItem);
+      });
+
+      renderTopCustomers();
+      renderLatestConversations();
+    }
+
+    function renderTopCustomers() {
+      const topCustomers = customers
+        .map(customer => ({
+          ...customer,
+          conversationCount: conversations.filter(conv => conv.customer_id === customer.id).length,
+        }))
+        .sort((a, b) => b.conversationCount - a.conversationCount)
+        .slice(0, 12);
+
+      const customerTable = document.getElementById('customerTable');
+      customerTable.innerHTML = '';
+      topCustomers.forEach((c, idx) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${idx + 1}</td><td>${c.name}</td><td></td><td>${c.phone || '-'}</td><td>${c.conversationCount}</td>`;
+        row.children[2].appendChild(statusTag(c.status || 'New lead'));
+        customerTable.appendChild(row);
+      });
+    }
+
+    function renderLatestConversations() {
+      const recentConversations = conversations.slice(0, 12);
+      const conversationTable = document.getElementById('conversationTable');
+      conversationTable.innerHTML = '';
+      recentConversations.forEach((conv, idx) => {
+        const customer = customers.find(c => c.id === conv.customer_id) || {};
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${idx + 1}</td><td>${conv.subject || '-'}</td><td>${customer.name || 'Unknown'}</td><td>${formatChannel(conv.channel_id)}</td><td></td>`;
+        row.children[4].appendChild(statusTag(customer.status || 'New lead'));
+        conversationTable.appendChild(row);
+      });
+    }
+
+    function renderAllCustomers() {
+      const customersWithConv = customers
+        .map(c => ({
+          ...c,
+          conversationCount: conversations.filter(conv => conv.customer_id === c.id).length,
+        }))
+        .sort((a, b) => b.conversationCount - a.conversationCount);
+
+      const allCustomerTable = document.getElementById('allCustomerTable');
+      allCustomerTable.innerHTML = '';
+      customersWithConv.forEach((c, idx) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${idx + 1}</td><td>${c.name}</td><td>${c.email || '-'}</td><td>${c.phone || '-'}</td><td></td><td>${c.conversationCount}</td>`;
+        row.children[4].appendChild(statusTag(c.status || 'New lead'));
+        allCustomerTable.appendChild(row);
+      });
+    }
+
+    function renderAllConversations() {
+      const allConversationTable = document.getElementById('allConversationTable');
+      allConversationTable.innerHTML = '';
+      conversations.forEach((conv, idx) => {
+        const customer = customers.find(c => c.id === conv.customer_id) || {};
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${idx + 1}</td><td>${conv.subject || '-'}</td><td>${customer.name || 'Unknown'}</td><td>${formatChannel(conv.channel_id)}</td>`;
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', () => loadConversationDetail(conv));
+        allConversationTable.appendChild(row);
+      });
+    }
+
+    function showStatusDetail(status) {
+      const statusChart = document.getElementById('statusDetailChart');
+      statusChart.innerHTML = '';
+      
+      const filteredCustomers = customers.filter(c => c.status === status);
+      const count = filteredCustomers.length;
+      
+      statusChart.appendChild(buildBar(status, count, customers.length, statusColorsHex[status]));
+      
+      const table = document.getElementById('statusCustomerTable');
+      table.innerHTML = '';
+      filteredCustomers.slice(0, 50).forEach((c, idx) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${idx + 1}</td><td>${c.name}</td><td>${c.email || '-'}</td><td>${c.phone || '-'}</td><td></td>`;
+        row.children[4].appendChild(statusTag(c.status));
+        table.appendChild(row);
+      });
+      
+      navigateTo('status');
+    }
+
+    function showChannelDetail(channel) {
+      const channelChart = document.getElementById('channelDetailChart');
+      channelChart.innerHTML = '';
+      
+      const filteredConversations = conversations.filter(c => formatChannel(c.channel_id) === channel);
+      const count = filteredConversations.length;
+      const color = channelColors[Object.keys({Email:0, Facebook:1, Instagram:2}).indexOf(channel) % 3];
+      
+      channelChart.appendChild(buildBar(channel, count, conversations.length, color));
+      
+      const table = document.getElementById('channelConversationTable');
+      table.innerHTML = '';
+      filteredConversations.slice(0, 50).forEach((conv, idx) => {
+        const customer = customers.find(c => c.id === conv.customer_id) || {};
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${idx + 1}</td><td>${conv.subject || '-'}</td><td>${customer.name || 'Unknown'}</td><td>${formatChannel(conv.channel_id)}</td><td>-</td>`;
+        table.appendChild(row);
+      });
+      
+      navigateTo('channel');
+    }
+
+    function loadConversationDetail(conversation) {
+      currentConversation = conversation;
+      const chatCard = document.getElementById('chatCard');
+      chatCard.style.display = 'flex';
+      
+      const chatPanel = document.getElementById('chatPanel');
+      const chatTitle = document.getElementById('chatTitle');
+      const customer = customers.find(c => c.id === conversation.customer_id) || {};
+      
+      chatTitle.textContent = `${conversation.subject} - ${customer.name}`;
+      chatPanel.innerHTML = '<div class="chat-body" id="chatBody"></div><div class="chat-footer"><input type="text" class="chat-input" placeholder="Nhập tin nhắn..." id="msgInput"><button class="chat-send-btn" id="sendBtn">Gửi</button></div>';
+      
+      const chatBody = chatPanel.querySelector('.chat-body');
+      const msgInput = document.getElementById('msgInput');
+      const sendBtn = document.getElementById('sendBtn');
+
+      fetchJson('/messages/conversation/' + conversation.id)
+        .then(messages => {
+          if (!messages.length) {
+            chatBody.innerHTML = '<div class="empty" style="margin:auto;">Chua co tin nhan.</div>';
+            return;
+          }
+          chatBody.innerHTML = '';
+          messages.forEach(msg => {
+            appendMessage(chatBody, msg);
+          });
+          chatBody.scrollTop = chatBody.scrollHeight;
+        })
+        .catch(err => {
+          chatBody.innerHTML = `<div class="empty" style="margin:auto;">Loi: ${err.message}</div>`;
+        });
+
+      sendBtn.addEventListener('click', () => sendMessage(msgInput, chatBody, sendBtn));
+      msgInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage(msgInput, chatBody, sendBtn);
+        }
+      });
+    }
+
+    function appendMessage(chatBody, msg) {
+      const bubble = document.createElement('div');
+      bubble.className = `chat-message ${msg.direction === 'outbound' ? 'outbound' : 'inbound'}`;
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message-bubble ${msg.direction === 'outbound' ? 'outbound' : 'inbound'}`;
+      const time = new Date(msg.created_at).toLocaleString('vi-VN', { hour12: false });
+      msgDiv.innerHTML = `<div>${msg.content}</div><span class="message-time">${time}</span>`;
+      bubble.appendChild(msgDiv);
+      chatBody.appendChild(bubble);
+    }
+
+    function sendMessage(msgInput, chatBody, sendBtn) {
+      const content = msgInput.value.trim();
+      if (!content || !currentConversation) return;
+      msgInput.value = '';
+      sendBtn.disabled = true;
+
+      const newMsg = {
+        id: Date.now(),
+        conversation_id: currentConversation.id,
+        sender_id: 1,
+        direction: 'outbound',
+        content: content,
+        created_at: new Date().toISOString(),
+      };
+      appendMessage(chatBody, newMsg);
+      chatBody.scrollTop = chatBody.scrollHeight;
+      sendBtn.disabled = false;
+      msgInput.focus();
+    }
+
+    function renderReports() {
+      const customerStatusCount = customers.reduce((acc, c) => {
+        acc[c.status] = (acc[c.status] || 0) + 1;
+        return acc;
+      }, {});
+
+      const channelCount = conversations.reduce((acc, conv) => {
+        const channel = formatChannel(conv.channel_id);
+        acc[channel] = (acc[channel] || 0) + 1;
+        return acc;
+      }, {});
+
+      let html = '<div style="display: grid; gap: 16px;">';
+      Object.entries(customerStatusCount).forEach(([status, count]) => {
+        html += `<div><strong>${status}:</strong> ${count} customers</div>`;
+      });
+      html += '</div>';
+      document.getElementById('reportsSummary').innerHTML = html;
+
+      html = '<div style="display: grid; gap: 16px;">';
+      Object.entries(channelCount).forEach(([channel, count]) => {
+        html += `<div><strong>${channel}:</strong> ${count} conversations</div>`;
+      });
+      html += '</div>';
+      document.getElementById('reportsMetrics').innerHTML = html;
+    }
+
+    async function init() {
+      customers = await fetchJson('/customers');
+      conversations = await fetchJson('/conversations');
+      renderDashboard();
+      renderAllCustomers();
+      renderAllConversations();
+      renderReports();
+    }
+
+    init();
+  </script>
 </body>
 </html>

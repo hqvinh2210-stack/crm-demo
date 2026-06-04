@@ -33,5 +33,9 @@ app.include_router(ai.router, prefix="/ai", tags=["ai"])
 
 @app.get("/")
 def root():
-    # Serve the frontend index from the repository-level `frontend` folder
-    return FileResponse(Path(__file__).resolve().parents[1] / "frontend" / "index.html")
+    base = Path(__file__).resolve().parents[1]
+    frontend_file = base / "frontend" / "index.html"
+    static_file = Path(__file__).resolve().parent / "static" / "index.html"
+    if frontend_file.exists():
+        return FileResponse(frontend_file)
+    return FileResponse(static_file)
